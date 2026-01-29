@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fpoly.java5demo.entities.Image;
 import com.fpoly.java5demo.entities.Product;
@@ -21,6 +22,9 @@ public class ProductServices {
 	@Autowired
 	ImageJPA imageJPA;
 
+	@Autowired
+	ImageServices imageService;
+
 	public List<Product> getList() {
 		List<Product> products = new ArrayList<Product>();
 		try {
@@ -31,14 +35,19 @@ public class ProductServices {
 		return products;
 	}
 
-	public String addProduct(Product product, List<Image> images) {
+	public String addProduct(Product product, List<MultipartFile> images) {
 		try {
 			Product prodSave = productJPA.save(product);
 
-			for (Image image : images) {
-				Image imageSave = image;
-				imageSave.setProduct(prodSave);
-				imageJPA.save(imageSave);
+			for (MultipartFile image : images) {
+				String name = imageService.save(image);
+
+				if (name != null) {
+					Image imageSave = new Image();
+					imageSave.setName(name);
+					imageSave.setProduct(prodSave);
+					imageJPA.save(imageSave);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

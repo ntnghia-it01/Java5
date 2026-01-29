@@ -29,7 +29,9 @@
 		 <label for="exampleFormControlInput1" class="form-label">Danh mục</label>
 		 <select name="category" class="form-select" aria-label="Default select example">
 			 <option value="0">----Chọn danh mục------</option>
-			 
+			 <th:block th:each="item : ${categories}">
+			 	<option th:value="${item.id}" th:text="${item.name}">----Chọn danh mục------</option>
+			 </th:block>
 		 </select>
 	  </div>
 	  
